@@ -3,6 +3,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import vertexShader from './shaders/vertexShader.glsl';
 import fragmentShader from './shaders/fragmentShader.glsl';
+import * as dat from 'lil-gui';
+
+// dedug
+const gui = new dat.GUI({ width: 300 });
 
 /**
  * Sizes
@@ -27,10 +31,24 @@ const textureLoader = new THREE.TextureLoader();
 const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
 // Material
-const material = new THREE.RawShaderMaterial({
+const material = new THREE.ShaderMaterial({
 	vertexShader: vertexShader,
 	fragmentShader: fragmentShader,
+	transparent: true,
+	side: THREE.DoubleSide,
+	uniforms: {
+		uFrequency: {
+			value: new THREE.Vector2(10, 5),
+		},
+	},
 });
+
+gui
+	.add(material.uniforms.uFrequency.value, 'x')
+	.min(0)
+	.max(20)
+	.step(0.001)
+	.name('frequencyX');
 
 // Mesh
 const mesh = new THREE.Mesh(geometry, material);
