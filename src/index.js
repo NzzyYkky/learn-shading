@@ -70,6 +70,8 @@ gui
 
 // Mesh
 const mesh = new THREE.Mesh(geometry, material);
+// add reduction
+mesh.scale.y = 2 / 3;
 scene.add(mesh);
 
 window.addEventListener('resize', () => {
