@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import vertexShader from './shaders/vertexShader.glsl';
 import fragmentShader from './shaders/fragmentShader.glsl';
 import * as dat from 'lil-gui';
+import jpFlag from './textures/jp-flag.png';
 
 // dedug
 const gui = new dat.GUI({ width: 300 });
@@ -26,6 +27,7 @@ const scene = new THREE.Scene();
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
+const flagTexture = textureLoader.load(jpFlag);
 
 // Geometry
 const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
@@ -40,6 +42,15 @@ const material = new THREE.ShaderMaterial({
 		uFrequency: {
 			value: new THREE.Vector2(10, 5),
 		},
+		uTime: {
+			value: 0,
+		},
+		uColor: {
+			value: new THREE.Color('red'),
+		},
+		uTexture: {
+			value: flagTexture,
+		},
 	},
 });
 
@@ -49,6 +60,13 @@ gui
 	.max(20)
 	.step(0.001)
 	.name('frequencyX');
+
+gui
+	.add(material.uniforms.uFrequency.value, 'y')
+	.min(0)
+	.max(20)
+	.step(0.001)
+	.name('frequencyY');
 
 // Mesh
 const mesh = new THREE.Mesh(geometry, material);
@@ -96,6 +114,7 @@ const clock = new THREE.Clock();
 const animate = () => {
 	//時間取得
 	const elapsedTime = clock.getElapsedTime();
+	material.uniforms.uTime.value = elapsedTime;
 
 	controls.update();
 
